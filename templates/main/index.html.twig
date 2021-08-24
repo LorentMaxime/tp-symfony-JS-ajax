@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter une boisson{% endblock %}
+
+{% block body %}
+
+<h1>Ajouter une boisson</h1>
+
+
+    Couleurs:
+    <select id="couleur">
+
+    </select>
+
+    <br>
+    <br>
+
+    Fruits :
+    <select name="" id="fruit" name="fruit">
+
+    </select>
+
+    <script>
+        let fruits = [];
+        let couleurs = [];
+
+        let url = "http://localhost/boisson-fruit/public/fruits-couleurs";
+        fetch(url).then(response => response.json()) // je recupere le body de la requete
+        .then(data => {
+            console.log(data);
+
+            // ajax <- JSON fruits (tableau) et couleurs (tableau)
+            fruits = data.fruits;
+// ------------------------------
+            couleurs = data.couleurs;
+            // UN SELECTEUR SUR LA BALISE SELECT #COULEURS
+            let selectC = document.getElementById('couleur');
+            // alimenter la balise couleur :
+            for (let couleur of couleurs)
+            {
+                let option = document.createElement('option'); // <option></option>
+                option.innerHTML = couleur.nom; // <option> pomme </option>
+                option.value = couleur.id; // <option value="1"> pomme </option>
+                // je met la balise option dans la balise select
+                selectC.appendChild(option);
+            }
+
+            remplirFruit(couleurs[0].id);
+            // --------------------------------------------------------------------------------------------
+            selectC.onchange= function ()
+            {
+                console.log('ok');
+                let idCouleur = this.value;
+                remplirFruit(idCouleur);
+            };
+        } )
+
+
+
+
+        function remplirFruit(idCouleur)
+        {
+            // en fonction de l'id couleur
+            // construire le select de fruits
+            let selectF = document.getElementById('fruit');
+            selectF.innerHTML = ''; // je vide la liste de fruits
+            for (let fruit of fruits){  // si la couleur correspond à idCouleur
+
+                if (idCouleur == fruit.couleur.id){
+                    let option = document.createElement('option'); // <option></option>
+                    option.innerHTML = fruit.nom; // <option> pomme </option>
+                    option.value = fruit.id; // <option value="1"> pomme </option>
+                    // je met la balise option dans la balise select
+                    selectF.appendChild(option);
+                }
+            }
+        }
+    </script>
+
+
+
+
+{% endblock %}
